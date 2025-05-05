@@ -4,7 +4,7 @@ const initialState = {
   items: [], // Все элементы
   filteredItems: [], // Фильтрованные элементы
   selectedItems: [], // Выбранные элементы
-  searchQuery: "",
+  searchQuery: "", // Поисковый запрос
   sortOrder: [], // Порядок отображения элементов
 };
 
@@ -12,37 +12,39 @@ const appReducer = (state, action) => {
   switch (action.type) {
     case "SET_ITEMS":
       return { ...state, items: action.payload };
+
     case "SET_FILTERED_ITEMS":
       return { ...state, filteredItems: action.payload };
+
     case "TOGGLE_SELECTION": {
       const newSelectedItems = state.selectedItems.includes(action.payload)
-        ? state.selectedItems.filter((id) => id !== action.payload) // Удалить ID
-        : [...state.selectedItems, action.payload]; // Добавить ID
+        ? state.selectedItems.filter((id) => id !== action.payload) // Удаляем ID
+        : [...state.selectedItems, action.payload]; // Добавляем ID
       return { ...state, selectedItems: newSelectedItems };
     }
-    case "SELECT_ALL": {
-      // Выбрать все видимые элементы
-      const allVisibleIds = state.filteredItems.map((item) => item.id);
-      return { ...state, selectedItems: allVisibleIds };
-    }
-    case "DESELECT_ALL": {
-      // Снять выделение со всех элементов
-      return { ...state, selectedItems: [] };
-    }
+
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
+
     case "UPDATE_SORT_ORDER":
       return { ...state, sortOrder: action.payload };
+
     case "ADD_ITEM": {
       const newItem = action.payload;
-      const updatedItems = [...state.items, newItem];
+      const updatedItems = [...state.items, newItem]; // Добавляем новый элемент
+      const updatedFilteredItems = [...state.filteredItems, newItem]; // Добавляем в фильтрованные
+
+      console.log("Updated Items:", updatedItems); // Отладочное сообщение
+      console.log("Updated Filtered Items:", updatedFilteredItems); // Отладочное сообщение
+
       return {
         ...state,
         items: updatedItems,
-        filteredItems: updatedItems.slice(0, 20),
-        sortOrder: [...state.sortOrder, newItem.id],
+        filteredItems: updatedFilteredItems,
+        sortOrder: [...state.sortOrder, newItem.id], // Добавляем ID в порядок отображения
       };
     }
+
     default:
       return state;
   }
@@ -69,6 +71,7 @@ export const AppStateProvider = ({ children }) => {
     const filtered = state.items.filter((item) =>
       item.value.toLowerCase().includes(state.searchQuery.toLowerCase())
     );
+    console.log("Filtered Items:", filtered); // Отладочное сообщение
     dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered });
   }, [state.searchQuery, state.items]);
 
