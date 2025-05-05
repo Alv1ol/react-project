@@ -1,4 +1,4 @@
-import React, { useContext, useTransition } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AppStateContext } from "../context/AppState";
@@ -6,7 +6,20 @@ import Item from "./Item";
 
 export const List = () => {
   const { state, dispatch } = useContext(AppStateContext);
-  const [isPending, startTransition] = useTransition(); // Используем isPending
+  const [visibleItems, setVisibleItems] = React.useState(state.filteredItems.slice(0, 20));
+  const observer = useRef();
+  const lastItemRef = (node) => {
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        const currentLength = visibleItems.length;
+        const nextItems = state.filteredItems.slice(currentLength, currentLength + 20);
+        setVisibleItems((prev) => [...prev, ...nextItems]);
+      }
+    });
+    if (node) observer.current.observe(node);
+  };
+
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
   const handleDragEnd = (event) => {
@@ -17,10 +30,7 @@ export const List = () => {
       const newIndex = state.sortOrder.indexOf(over.id);
       const newOrder = arrayMove(state.sortOrder, oldIndex, newIndex);
 
-      // Используем startTransition для оптимизации
-      startTransition(() => {
-        dispatch({ type: "UPDATE_SORT_ORDER", payload: newOrder });
-      });
+      dispatch({ type: "UPDATE_SORT_ORDER", payload: newOrder });
     }
   };
 
@@ -30,14 +40,14 @@ export const List = () => {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      {/* Отображаем индикатор загрузки */}
-      {isPending && <div style={{ color: "blue" }}>Сортировка...</div>}
-
       <SortableContext items={state.sortOrder} strategy={verticalListSortingStrategy}>
-        {state.filteredItems.map((item) => (
-          <Item key={item.id} item={item} />
+        {visibleItems.map((item, index) => (
+          <div key={item.id} ref={index === visibleItems.length - 1 ? lastItemRef : null}>
+            <Item item={item} />
+          </div>
         ))}
       </SortableContext>
     </DndContext>
   );
 };
+
