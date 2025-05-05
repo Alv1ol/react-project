@@ -6,6 +6,7 @@ import { AppStateContext } from "../context/AppState";
 const Item = ({ item }) => {
   const { state, dispatch } = useContext(AppStateContext);
 
+  // Вызываем useSortable всегда, вне зависимости от наличия item
   const {
     attributes,
     listeners,
@@ -13,7 +14,13 @@ const Item = ({ item }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: item.id });
+  } = useSortable({ id: item?.id || null });
+
+  // Проверяем, что item существует
+  if (!item) {
+    console.warn("Item is undefined or null");
+    return null;
+  }
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -37,9 +44,10 @@ const Item = ({ item }) => {
         border: "1px solid #ccc",
         marginBottom: "4px",
         backgroundColor: state.selectedItems.includes(item.id) ? "#020202" : "black",
+        cursor: "grab",
       }}
-      {...attributes}
-      {...listeners}
+      {...attributes} // Используем attributes
+      {...listeners}  // Используем listeners
     >
       <input
         type="checkbox"
@@ -51,4 +59,4 @@ const Item = ({ item }) => {
   );
 };
 
-export default Item;
+export default React.memo(Item);
