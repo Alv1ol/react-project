@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AppStateContext } from "../context/AppState";
@@ -6,8 +6,15 @@ import Item from "./Item";
 
 export const List = () => {
   const { state, dispatch } = useContext(AppStateContext);
-  const [visibleItems, setVisibleItems] = React.useState(state.filteredItems.slice(0, 20));
+  const [visibleItems, setVisibleItems] = useState(state.filteredItems.slice(0, 20));
   const observer = useRef();
+
+  // Используем useEffect для обновления visibleItems при изменении state.filteredItems
+  useEffect(() => {
+    setVisibleItems(state.filteredItems.slice(0, 20));
+  }, [state.filteredItems]);
+
+  // Логика бесконечной подгрузки через Intersection Observer
   const lastItemRef = (node) => {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
@@ -20,8 +27,10 @@ export const List = () => {
     if (node) observer.current.observe(node);
   };
 
+  // Настройка датчиков для Drag & Drop
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
+  // Обработка окончания перетаскивания
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
