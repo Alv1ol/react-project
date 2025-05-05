@@ -22,6 +22,10 @@ const Item = ({ item }) => {
     cursor: "grab",
   };
 
+  const handleToggleSelection = () => {
+    dispatch({ type: "TOGGLE_SELECTION", payload: item.id });
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -32,7 +36,7 @@ const Item = ({ item }) => {
         padding: "8px",
         border: "1px solid #ccc",
         marginBottom: "4px",
-        backgroundColor: state.selectedItems.includes(item.id) ? "#e0f7fa" : "#040404",
+        backgroundColor: state.selectedItems.includes(item.id) ? "#e0f7fa" : "white",
       }}
       {...attributes}
       {...listeners}
@@ -40,7 +44,7 @@ const Item = ({ item }) => {
       <input
         type="checkbox"
         checked={state.selectedItems.includes(item.id)}
-        onChange={() => dispatch({ type: "TOGGLE_SELECTION", payload: item.id })}
+        onChange={handleToggleSelection}
       />
       <span style={{ marginLeft: "8px" }}>{item.value}</span>
     </div>
