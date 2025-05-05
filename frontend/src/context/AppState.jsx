@@ -18,8 +18,8 @@ const appReducer = (state, action) => {
 
     case "TOGGLE_SELECTION": {
       const newSelectedItems = state.selectedItems.includes(action.payload)
-        ? state.selectedItems.filter((id) => id !== action.payload) // Удаляем ID
-        : [...state.selectedItems, action.payload]; // Добавляем ID
+        ? state.selectedItems.filter((id) => id !== action.payload)
+        : [...state.selectedItems, action.payload];
       return { ...state, selectedItems: newSelectedItems };
     }
 
