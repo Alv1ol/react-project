@@ -36,7 +36,7 @@ const Item = ({ item }) => {
         padding: "8px",
         border: "1px solid #ccc",
         marginBottom: "4px",
-        backgroundColor: state.selectedItems.includes(item.id) ? "#e0f7fa" : "white",
+        backgroundColor: state.selectedItems.includes(item.id) ? "#020202" : "black",
       }}
       {...attributes}
       {...listeners}
