@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AppStateContext } from "../context/AppState";
@@ -8,11 +8,6 @@ export const List = () => {
   const { state, dispatch } = useContext(AppStateContext);
   const [visibleItems, setVisibleItems] = useState(state.filteredItems.slice(0, 20));
   const observer = useRef();
-
-  // Используем useEffect для обновления visibleItems при изменении state.filteredItems
-  useEffect(() => {
-    setVisibleItems(state.filteredItems.slice(0, 20));
-  }, [state.filteredItems]);
 
   // Логика бесконечной подгрузки через Intersection Observer
   const lastItemRef = (node) => {
@@ -43,6 +38,11 @@ export const List = () => {
     }
   };
 
+  // Отображаем элементы в порядке sortOrder
+  const sortedVisibleItems = state.sortOrder
+    .map((id) => state.items.find((item) => item.id === id))
+    .filter(Boolean);
+
   return (
     <DndContext
       sensors={sensors}
@@ -50,8 +50,8 @@ export const List = () => {
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={state.sortOrder} strategy={verticalListSortingStrategy}>
-        {visibleItems.map((item, index) => (
-          <div key={item.id} ref={index === visibleItems.length - 1 ? lastItemRef : null}>
+        {sortedVisibleItems.map((item, index) => (
+          <div key={item.id} ref={index === sortedVisibleItems.length - 1 ? lastItemRef : null}>
             <Item item={item} />
           </div>
         ))}
@@ -59,4 +59,3 @@ export const List = () => {
     </DndContext>
   );
 };
-
