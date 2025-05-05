@@ -3,21 +3,18 @@ import { AppStateContext } from "../context/AppState";
 
 export const SearchBar = () => {
   const { dispatch, state } = useContext(AppStateContext);
-  const [newItemText, setNewItemText] = useState(""); // Состояние для нового элемента
+  const [newItemText, setNewItemText] = useState("");
 
   const handleAddItem = (e) => {
     e.preventDefault();
-    if (!newItemText.trim()) return; // Предотвращаем добавление пустых элементов
+    if (!newItemText.trim()) return;
 
     const newItem = {
-      id: Date.now(), // Генерируем уникальный ID
+      id: Date.now(),
       value: newItemText,
     };
 
-    // Добавляем новый элемент в глобальное состояние
     dispatch({ type: "ADD_ITEM", payload: newItem });
-
-    // Очищаем поле ввода нового элемента
     setNewItemText("");
   };
 
@@ -48,4 +45,3 @@ export const SearchBar = () => {
     </div>
   );
 };
-
