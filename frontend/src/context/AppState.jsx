@@ -75,8 +75,8 @@ export const AppStateProvider = ({ children }) => {
     const filtered = state.items.filter((item) =>
       item.value.toLowerCase().includes(state.searchQuery.toLowerCase())
     );
-    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered.slice(0, 20) });
-    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.slice(0, 20).map((item) => item.id) });
+    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered.slice(0, 1000000) });
+    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.slice(0, 1000000).map((item) => item.id) });
   }, [state.searchQuery, state.items]);
 
   return (
