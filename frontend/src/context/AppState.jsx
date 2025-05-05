@@ -23,6 +23,14 @@ const appReducer = (state, action) => {
       return { ...state, selectedItems: newSelectedItems };
     }
 
+    case "SELECT_ALL": {
+      const allVisibleIds = state.filteredItems.map((item) => item.id);
+      return { ...state, selectedItems: allVisibleIds };
+    }
+
+    case "DESELECT_ALL":
+      return { ...state, selectedItems: [] };
+
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
 
