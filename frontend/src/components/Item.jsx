@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, memo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { AppStateContext } from "../context/AppState";
 
-export const Item = ({ item }) => {
+const Item = ({ item }) => {
   const { state, dispatch } = useContext(AppStateContext);
 
   // Вызываем useSortable всегда, вне зависимости от наличия item
@@ -59,3 +59,4 @@ export const Item = ({ item }) => {
   );
 };
 
+export default memo(Item);
