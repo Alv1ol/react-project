@@ -18,6 +18,14 @@ export const SearchBar = () => {
     setNewItemText("");
   };
 
+  const handleSelectAll = () => {
+    dispatch({ type: "SELECT_ALL" });
+  };
+
+  const handleDeselectAll = () => {
+    dispatch({ type: "DESELECT_ALL" });
+  };
+
   return (
     <div style={{ marginBottom: "16px" }}>
       {/* Поле поиска */}
@@ -28,6 +36,16 @@ export const SearchBar = () => {
         onChange={(e) => dispatch({ type: "SET_SEARCH_QUERY", payload: e.target.value })}
         style={{ padding: "8px", width: "100%", marginBottom: "8px" }}
       />
+
+      {/* Кнопки выбора */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+        <button onClick={handleSelectAll} style={{ padding: "8px 16px" }}>
+          Выбрать все
+        </button>
+        <button onClick={handleDeselectAll} style={{ padding: "8px 16px" }}>
+          Снять выделение
+        </button>
+      </div>
 
       {/* Форма для добавления нового элемента */}
       <form onSubmit={handleAddItem} style={{ display: "flex", gap: "8px" }}>
@@ -45,3 +63,4 @@ export const SearchBar = () => {
     </div>
   );
 };
+
