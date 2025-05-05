@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef } from "react";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AppStateContext } from "../context/AppState";
-import Item from "./Item";
+import {Item} from "./Item";
 import { FixedSizeList as ListVirtualized } from "react-window";
 
 export const List = () => {
