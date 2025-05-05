@@ -31,7 +31,7 @@ const appReducer = (state, action) => {
       return {
         ...state,
         items: updatedItems,
-        filteredItems: updatedItems.slice(0, 1000000), // Обновляем отображаемые элементы
+        filteredItems: updatedItems.slice(0, 20), // Обновляем отображаемые элементы
         sortOrder: [...state.sortOrder, newItem.id], // Обновляем порядок сортировки
       };
     }
@@ -52,8 +52,8 @@ export const AppStateProvider = ({ children }) => {
       value: `Item ${i + 1}`,
     }));
     dispatch({ type: "SET_ITEMS", payload: initialItems });
-    dispatch({ type: "SET_FILTERED_ITEMS", payload: initialItems.slice(0, 1000000) });
-    dispatch({ type: "UPDATE_SORT_ORDER", payload: initialItems.slice(0, 1000000).map((item) => item.id) });
+    dispatch({ type: "SET_FILTERED_ITEMS", payload: initialItems.slice(0, 20) });
+    dispatch({ type: "UPDATE_SORT_ORDER", payload: initialItems.slice(0, 20).map((item) => item.id) });
   }, []);
 
   // Сохранение состояния в localStorage
@@ -75,8 +75,8 @@ export const AppStateProvider = ({ children }) => {
     const filtered = state.items.filter((item) =>
       item.value.toLowerCase().includes(state.searchQuery.toLowerCase())
     );
-    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered.slice(0, 1000000) });
-    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.slice(0, 1000000).map((item) => item.id) });
+    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered.slice(0, 20) });
+    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.slice(0, 20).map((item) => item.id) });
   }, [state.searchQuery, state.items]);
 
   return (
