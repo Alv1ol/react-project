@@ -1,11 +1,11 @@
 import React, { createContext, useReducer, useEffect } from "react";
 
 const initialState = {
-  items: [],
-  filteredItems: [],
-  selectedItems: [],
+  items: [], // Все элементы
+  filteredItems: [], // Фильтрованные элементы
+  selectedItems: [], // Выбранные элементы
   searchQuery: "",
-  sortOrder: [],
+  sortOrder: [], // Порядок отображения элементов
 };
 
 const appReducer = (state, action) => {
@@ -16,9 +16,18 @@ const appReducer = (state, action) => {
       return { ...state, filteredItems: action.payload };
     case "TOGGLE_SELECTION": {
       const newSelectedItems = state.selectedItems.includes(action.payload)
-        ? state.selectedItems.filter((id) => id !== action.payload)
-        : [...state.selectedItems, action.payload];
+        ? state.selectedItems.filter((id) => id !== action.payload) // Удалить ID
+        : [...state.selectedItems, action.payload]; // Добавить ID
       return { ...state, selectedItems: newSelectedItems };
+    }
+    case "SELECT_ALL": {
+      // Выбрать все видимые элементы
+      const allVisibleIds = state.filteredItems.map((item) => item.id);
+      return { ...state, selectedItems: allVisibleIds };
+    }
+    case "DESELECT_ALL": {
+      // Снять выделение со всех элементов
+      return { ...state, selectedItems: [] };
     }
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
