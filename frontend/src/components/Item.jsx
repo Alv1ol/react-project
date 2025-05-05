@@ -3,7 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { AppStateContext } from "../context/AppState";
 
-const Item = ({ item }) => {
+export const Item = ({ item }) => {
   const { state, dispatch } = useContext(AppStateContext);
 
   // Вызываем useSortable всегда, вне зависимости от наличия item
@@ -59,4 +59,3 @@ const Item = ({ item }) => {
   );
 };
 
-export default React.memo(Item);
