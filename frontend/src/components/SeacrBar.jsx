@@ -1,24 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { AppStateContext } from "../context/AppState";
 
 export const SearchBar = () => {
   const { dispatch, state } = useContext(AppStateContext);
-  const [newItemText, setNewItemText] = useState(""); // Состояние для нового элемента
 
-  const handleAddItem = (e) => {
-    e.preventDefault();
-    if (!newItemText.trim()) return; // Предотвращаем добавление пустых элементов
+  const handleSelectAll = () => {
+    dispatch({ type: "SELECT_ALL" });
+  };
 
-    const newItem = {
-      id: Date.now(), // Генерируем уникальный ID
-      value: newItemText,
-    };
-
-    // Добавляем новый элемент в глобальное состояние
-    dispatch({ type: "ADD_ITEM", payload: newItem });
-
-    // Очищаем поле ввода нового элемента
-    setNewItemText("");
+  const handleDeselectAll = () => {
+    dispatch({ type: "DESELECT_ALL" });
   };
 
   return (
@@ -32,20 +23,20 @@ export const SearchBar = () => {
         style={{ padding: "8px", width: "100%", marginBottom: "8px" }}
       />
 
-      {/* Форма для добавления нового элемента */}
-      <form onSubmit={handleAddItem} style={{ display: "flex", gap: "8px" }}>
-        <input
-          type="text"
-          placeholder="Введите текст для добавления..."
-          value={newItemText}
-          onChange={(e) => setNewItemText(e.target.value)}
-          style={{ padding: "8px", flex: 1 }}
-        />
-        <button type="submit" style={{ padding: "8px 16px" }}>
-          Добавить
+      {/* Индикация выбранных элементов */}
+      <div style={{ marginBottom: "8px" }}>
+        Выбрано элементов: {state.selectedItems.length}
+      </div>
+
+      {/* Кнопки выбора */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+        <button onClick={handleSelectAll} style={{ padding: "8px 16px" }}>
+          Выбрать все
         </button>
-      </form>
+        <button onClick={handleDeselectAll} style={{ padding: "8px 16px" }}>
+          Снять выделение
+        </button>
+      </div>
     </div>
   );
 };
-

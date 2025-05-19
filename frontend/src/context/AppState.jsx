@@ -1,40 +1,58 @@
 import React, { createContext, useReducer, useEffect } from "react";
 
 const initialState = {
-  items: [],
-  filteredItems: [],
-  selectedItems: [],
-  searchQuery: "",
-  sortOrder: [],
+  items: [], // Все элементы
+  filteredItems: [], // Фильтрованные элементы
+  selectedItems: [], // Выбранные элементы
+  searchQuery: "", // Поисковый запрос
+  sortOrder: [], // Порядок отображения элементов
 };
 
 const appReducer = (state, action) => {
   switch (action.type) {
     case "SET_ITEMS":
       return { ...state, items: action.payload };
+
     case "SET_FILTERED_ITEMS":
       return { ...state, filteredItems: action.payload };
-    case "TOGGLE_SELECTION":
-      return {
-        ...state,
-        selectedItems: state.selectedItems.includes(action.payload)
-          ? state.selectedItems.filter((id) => id !== action.payload)
-          : [...state.selectedItems, action.payload],
-      };
+
+    case "TOGGLE_SELECTION": {
+      const newSelectedItems = state.selectedItems.includes(action.payload)
+        ? state.selectedItems.filter((id) => id !== action.payload)
+        : [...state.selectedItems, action.payload];
+      return { ...state, selectedItems: newSelectedItems };
+    }
+
+    case "SELECT_ALL": {
+      const allVisibleIds = state.filteredItems.map((item) => item.id);
+      return { ...state, selectedItems: allVisibleIds };
+    }
+
+    case "DESELECT_ALL":
+      return { ...state, selectedItems: [] };
+
     case "SET_SEARCH_QUERY":
       return { ...state, searchQuery: action.payload };
+
     case "UPDATE_SORT_ORDER":
       return { ...state, sortOrder: action.payload };
+
     case "ADD_ITEM": {
       const newItem = action.payload;
-      const updatedItems = [...state.items, newItem];
+      const updatedItems = [...state.items, newItem]; // Добавляем новый элемент
+      const updatedFilteredItems = [...state.filteredItems, newItem]; // Добавляем в фильтрованные
+
+      console.log("Updated Items:", updatedItems); // Отладочное сообщение
+      console.log("Updated Filtered Items:", updatedFilteredItems); // Отладочное сообщение
+
       return {
         ...state,
         items: updatedItems,
-        filteredItems: updatedItems.slice(0, 20), // Обновляем отображаемые элементы
-        sortOrder: [...state.sortOrder, newItem.id], // Обновляем порядок сортировки
+        filteredItems: updatedFilteredItems,
+        sortOrder: [...state.sortOrder, newItem.id], // Добавляем ID в порядок отображения
       };
     }
+
     default:
       return state;
   }
@@ -56,27 +74,13 @@ export const AppStateProvider = ({ children }) => {
     dispatch({ type: "UPDATE_SORT_ORDER", payload: initialItems.slice(0, 20).map((item) => item.id) });
   }, []);
 
-  // Сохранение состояния в localStorage
-  useEffect(() => {
-    localStorage.setItem("selectedItems", JSON.stringify(state.selectedItems));
-    localStorage.setItem("sortOrder", JSON.stringify(state.sortOrder));
-  }, [state.selectedItems, state.sortOrder]);
-
-  // Восстановление состояния из localStorage
-  useEffect(() => {
-    const savedSelectedItems = JSON.parse(localStorage.getItem("selectedItems"));
-    const savedSortOrder = JSON.parse(localStorage.getItem("sortOrder"));
-    if (savedSelectedItems) dispatch({ type: "TOGGLE_SELECTION", payload: savedSelectedItems });
-    if (savedSortOrder) dispatch({ type: "UPDATE_SORT_ORDER", payload: savedSortOrder });
-  }, []);
-
   // Фильтрация поиска
   useEffect(() => {
     const filtered = state.items.filter((item) =>
       item.value.toLowerCase().includes(state.searchQuery.toLowerCase())
     );
-    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered.slice(0, 20) });
-    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.slice(0, 20).map((item) => item.id) });
+    console.log("Filtered Items:", filtered); // Отладочное сообщение
+    dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered });
   }, [state.searchQuery, state.items]);
 
   return (
