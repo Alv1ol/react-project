@@ -6,6 +6,7 @@ const initialState = {
   selectedItems: [], // Выбранные элементы
   searchQuery: "", // Поисковый запрос
   sortOrder: [], // Порядок отображения элементов
+  visibleCount: 20, // Количество отображаемых элементов
 };
 
 const appReducer = (state, action) => {
@@ -39,19 +40,19 @@ const appReducer = (state, action) => {
 
     case "ADD_ITEM": {
       const newItem = action.payload;
-      const updatedItems = [...state.items, newItem]; // Добавляем новый элемент
-      const updatedFilteredItems = [...state.filteredItems, newItem]; // Добавляем в фильтрованные
-
-      console.log("Updated Items:", updatedItems); // Отладочное сообщение
-      console.log("Updated Filtered Items:", updatedFilteredItems); // Отладочное сообщение
+      const updatedItems = [...state.items, newItem];
+      const updatedFilteredItems = [...state.filteredItems, newItem];
 
       return {
         ...state,
         items: updatedItems,
         filteredItems: updatedFilteredItems,
-        sortOrder: [...state.sortOrder, newItem.id], // Добавляем ID в порядок отображения
+        sortOrder: [...state.sortOrder, newItem.id],
       };
     }
+
+    case "INCREASE_VISIBLE_COUNT":
+      return { ...state, visibleCount: state.visibleCount + action.payload };
 
     default:
       return state;
@@ -70,18 +71,18 @@ export const AppStateProvider = ({ children }) => {
       value: `Item ${i + 1}`,
     }));
     dispatch({ type: "SET_ITEMS", payload: initialItems });
-    dispatch({ type: "SET_FILTERED_ITEMS", payload: initialItems.slice(0, 20) });
-    dispatch({ type: "UPDATE_SORT_ORDER", payload: initialItems.slice(0, 20).map((item) => item.id) });
+    dispatch({ type: "SET_FILTERED_ITEMS", payload: initialItems.slice(0, state.visibleCount) });
+    dispatch({ type: "UPDATE_SORT_ORDER", payload: initialItems.slice(0, state.visibleCount).map((item) => item.id) });
   }, []);
 
   // Фильтрация поиска
   useEffect(() => {
-    const filtered = state.items.filter((item) =>
-      item.value.toLowerCase().includes(state.searchQuery.toLowerCase())
-    );
-    console.log("Filtered Items:", filtered); // Отладочное сообщение
+    const filtered = state.items
+      .filter((item) => item.value.toLowerCase().includes(state.searchQuery.toLowerCase()))
+      .slice(0, state.visibleCount);
     dispatch({ type: "SET_FILTERED_ITEMS", payload: filtered });
-  }, [state.searchQuery, state.items]);
+    dispatch({ type: "UPDATE_SORT_ORDER", payload: filtered.map((item) => item.id) });
+  }, [state.searchQuery, state.items, state.visibleCount]);
 
   return (
     <AppStateContext.Provider value={{ state, dispatch }}>
