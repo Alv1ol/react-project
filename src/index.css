@@ -49,19 +49,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #e50914;
+  background-color: #000000;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #ff1f1f;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 3px auto #ff1f1f;
+  background-color: #ffffff55;
 }
 
 section{
