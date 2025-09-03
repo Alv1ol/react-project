@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { MovieCard } from "./MovieCard";
+import { useMemo, useState } from "react";
+import MovieCard from "./MovieCard";
 import { MOVIES } from "./movies.data";
 import { useDebouce } from "./hooks/useDebounce";
 import { useTheme } from "./hooks/useTheme";
@@ -10,9 +10,11 @@ export function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const debounceSearch = useDebouce(searchTerm, 400);
 
-  const movies = MOVIES.filter((movie) =>
-    movie.name.toLowerCase().includes(debounceSearch.toLowerCase())
-  );
+  const movies = useMemo(() => {
+    return MOVIES.filter((movie) =>
+      movie.name.toLowerCase().includes(debounceSearch.toLowerCase())
+    );
+  }, [debounceSearch]);
 
   return (
     <div className="min-h-screen w-full bg-white dark:bg-black text-black dark:text-white px-6 py-5">
@@ -35,7 +37,7 @@ export function App() {
             className="text-sm px-3 py-1 rounded border border-white/20
           dark:border-white/10 hover:bg-white hover:text-black dark:hover:bg-white/10 transition"
           >
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+            {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
           </button>
         </div>
       </header>
