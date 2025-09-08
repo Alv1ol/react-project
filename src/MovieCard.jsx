@@ -1,6 +1,7 @@
 import { memo, useCallback, useState } from "react";
 import FavouriteButton from "./FavouriteButton";
 import { Modal } from "./components/ui/Modal";
+import { Link } from "react-router-dom";
 
 function MovieCard({ image, rating, trailerYoutubeId }) {
   const [isOpenTrailer, setIsOpenTrailer] = useState(false);
@@ -40,6 +41,10 @@ function MovieCard({ image, rating, trailerYoutubeId }) {
         >
           🎥
         </button>
+
+        <Link to={`/movie/${trailerYoutubeId}`} className="btn">
+          🔗
+        </Link>
       </div>
 
       <div
