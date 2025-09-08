@@ -12,7 +12,7 @@ export function MovieDetails() {
   if (!movie) return <p>Movie not found!</p>;
 
   return (
-    <div className="min-h-screen px-6 py-10 bg-black text-white">
+    <div>
       <div className="flex flex-col md:flex-row gap-10 items-start">
         <img
           src={movie.image}
