@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { App } from "./App";
-import { MovieDetails } from "./MovieDetails";
+import { App } from "./screens/home/App";
+import { MovieDetails } from "./screens/movie/MovieDetails";
 import { Layout } from "./components/layout";
 
 export function MainRoutes() {

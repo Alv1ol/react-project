@@ -1,6 +1,12 @@
-import { useMemo } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { MOVIES } from "./movies.data";
+import { MOVIES } from "../home/movies.data";
+
+const LazyMovieComments = lazy(() =>
+  import("./MovieComments").then((c) => ({
+    default: c.MovieComments,
+  }))
+);
 
 export function MovieDetails() {
   const { id } = useParams();
@@ -30,6 +36,10 @@ export function MovieDetails() {
             там не своего за великий приставка одна ipsum страну, путь
             парадигматическая текстов, осталось семантика.
           </p>
+
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyMovieComments />
+          </Suspense>
         </div>
       </div>
     </div>

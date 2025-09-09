@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import MovieCard from "./MovieCard";
 import { MOVIES } from "./movies.data";
-import { useDebouce } from "./hooks/useDebounce";
-import { useTheme } from "./hooks/useTheme";
+import { useDebouce } from "../../hooks/useDebounce";
+import { useTheme } from "../../hooks/useTheme";
 
 export function App() {
   const { theme, toggleTheme } = useTheme();
